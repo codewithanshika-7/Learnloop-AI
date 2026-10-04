@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#f8faf8] text-[#253D2C]">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LearnLoop — Your syllabus. Your pace. Your learning path.</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          },
+          colors: {
+            forest: {
+              primary: '#2E6F40',
+              mint: '#CFFFDC',
+              leaf: '#68BA7F',
+              dark: '#253D2C',
+              darker: '#1b2c20',
+              subtle: '#eaf8ef',
+              border: '#c2e7cd'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html,
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f7f2;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #a9d9b6;
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #68BA7F;
+    }
+
+    .forest-glow {
+      box-shadow: 0 10px 25px -5px rgba(46, 111, 64, 0.20);
+    }
+
+    .page-view {
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .upload-drag {
+      border-color: #2E6F40 !important;
+      background: #CFFFDC !important;
+    }
+  </style>
+</head>
+
+<body class="flex flex-col min-h-screen bg-[#f8faf8] font-sans antialiased text-[#253D2C]">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-forest-border shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- LOGO -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('landing')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2E6F40] to-[#253D2C] flex items-center justify-center text-white shadow-md">
+          <svg class="w-5 h-5 text-[#CFFFDC]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#2E6F40] to-[#253D2C]">
+            LearnLoop
+          </span>
+          <span class="hidden sm:inline-block ml-2 text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded-full bg-[#CFFFDC] text-[#253D2C]">
+            AI Learning
+          </span>
+        </div>
+      </div>
+
+      <!-- DESKTOP NAV -->
+      <nav class="hidden md:flex items-center space-x-1">
+        <button onclick="navigateTo('dashboard')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold hover:text-[#2E6F40] hover:bg-forest-subtle transition" data-target="dashboard">
+          Dashboard
+        </button>
+        <button onclick="navigateTo('setup')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold hover:text-[#2E6F40] hover:bg-forest-subtle transition" data-target="setup">
+          Create Plan
+        </button>
+        <button onclick="navigateTo('roadmap')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold hover:text-[#2E6F40] hover:bg-forest-subtle transition" data-target="roadmap">
+          My Roadmap
+        </button>
+        <button onclick="navigateTo('quiz')" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold hover:text-[#2E6F40] hover:bg-forest-subtle transition" data-target="quiz">
+          Quiz
+        </button>
+      </nav>
+
+      <!-- RIGHT SIDE -->
+      <div class="hidden md:flex items-center gap-3">
+        <button onclick="navigateTo('setup')" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-[#CFFFDC] hover:bg-[#bbf5cd] border border-[#68BA7F]/60 transition">
+          + New Syllabus
+        </button>
+        <div class="h-6 w-px bg-forest-border"></div>
+
+        <!-- AUTH -->
+        <div id="authHeaderSection" class="flex items-center gap-2">
+          <button onclick="openAuthModal('login')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-[#2E6F40] bg-[#eaf8ef] border border-[#68BA7F]/40">
+            Log In
+          </button>
+          <button onclick="openAuthModal('signup')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#2E6F40] hover:bg-[#253D2C]">
+            Sign Up
+          </button>
+        </div>
+
+        <!-- USER PROFILE -->
+        <div id="userProfileSection" class="hidden items-center gap-2 pl-1 cursor-pointer" onclick="handleLogout()">
+          <div id="userAvatar" class="w-8 h-8 rounded-full bg-[#2E6F40] text-[#CFFFDC] flex items-center justify-center text-xs font-bold">
+            U
+          </div>
+          <div class="text-left hidden lg:block">
+            <div id="userNameDisplay" class="text-xs font-bold">
+              Student
+            </div>
+            <div class="text-[10px] text-rose-600">
+              Logout
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE BUTTON -->
+      <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-forest-subtle">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="hidden md:hidden border-t border-forest-border bg-white px-4 py-4 space-y-2">
+    <button onclick="navigateTo('landing');toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-forest-subtle">
+      Home
+    </button>
+    <button onclick="navigateTo('dashboard');toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-forest-subtle">
+      Dashboard
+    </button>
+    <button onclick="navigateTo('setup');toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-forest-subtle">
+      Create Plan
+    </button>
+    <button onclick="navigateTo('roadmap');toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-forest-subtle">
+      My Roadmap
+    </button>
+    <button onclick="navigateTo('quiz');toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-forest-subtle">
+      Quiz
+    </button>
+  </div>
+</header>
+
+<!-- TOAST -->
+<div id="toast" class="fixed bottom-5 right-5 z-[100] translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-[#253D2C] text-[#CFFFDC] text-sm font-semibold px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2">
+  <span id="toastIcon">🌿</span>
+  <span id="toastMessage">Notification</span>
+</div>
+
+<!-- MAIN -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+
+  <!-- LANDING PAGE -->
+  <section id="page-landing" class="page-view flex flex-col items-center text-center pt-10 md:pt-20 pb-16">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#CFFFDC]/70 border border-[#68BA7F]/60 text-xs font-bold mb-6">
+      <span class="w-2 h-2 rounded-full bg-[#2E6F40] animate-pulse"></span>
+      AI-Powered Personalized Learning
+    </div>
+
+    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl leading-tight">
+      Your syllabus. <span class="text-[#2E6F40]">Your pace.</span> Your learning path.
+    </h1>
+
+    <p class="mt-6 text-lg sm:text-xl text-[#253D2C]/70 max-w-2xl leading-relaxed">
+      Upload your syllabus, tell us your exam date and available study time, and let AI create a realistic day-by-day learning roadmap for you.
+    </p>
+
+    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+      <button onclick="navigateTo('setup')" class="px-8 py-4 rounded-xl bg-[#2E6F40] hover:bg-[#253D2C] text-white font-bold shadow-lg forest-glow transition">
+        Start Learning →
+      </button>
+      <button onclick="navigateTo('dashboard')" class="px-7 py-4 rounded-xl bg-white border border-forest-border font-semibold hover:bg-[#f3faf5] transition">
+        View Dashboard
+      </button>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-5xl text-left">
+      <div class="bg-white p-6 rounded-2xl border border-forest-border shadow-sm hover:shadow-md transition">
+        <div class="text-3xl mb-4">📚</div>
+        <h3 class="font-extrabold text-lg mb-2">Personalized Roadmap</h3>
+        <p class="text-sm text-[#253D2C]/70 leading-relaxed">
+          Convert your syllabus into a realistic day-by-day study plan.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-forest-border shadow-sm hover:shadow-md transition">
+        <div class="text-3xl mb-4">🧠</div>
+        <h3 class="font-extrabold text-lg mb-2">AI-Powered Learning</h3>
+        <p class="text-sm text-[#253D2C]/70 leading-relaxed">
+          Get study priorities, practice tasks and revision suggestions.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-forest-border shadow-sm hover:shadow-md transition">
+        <div class="text-3xl mb-4">📈</div>
+        <h3 class="font-extrabold text-lg mb-2">Track Progress</h3>
+        <p class="text-sm text-[#253D2C]/70 leading-relaxed">
+          Mark topics complete and monitor your overall preparation.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETUP PAGE -->
+  <section id="page-setup" class="page-view hidden max-w-3xl mx-auto py-6">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-extrabold">Build Your Learning Plan</h2>
+      <p class="text-[#253D2C]/70 mt-2">Give LearnLoop your syllabus and study constraints.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-forest-border shadow-sm p-6 sm:p-8 space-y-8">
+      <!-- PDF UPLOAD -->
+      <div>
+        <label class="block text-sm font-extrabold mb-3">1. Upload your syllabus</label>
+        <div
+          id="dropzone"
+          class="border-2 border-dashed border-[#68BA7F]/70 rounded-xl p-8 text-center bg-[#eaf8ef]/50 cursor-pointer transition"
+          onclick="document.getElementById('fileInput').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)"
+        >
+          <input id="fileInput" type="file" accept=".pdf" class="hidden" onchange="handleFileSelected(this.files)">
+          <div id="uploadPrompt">
+            <div class="w-14 h-14 mx-auto rounded-full bg-[#CFFFDC] flex items-center justify-center text-2xl mb-4">
+              📄
+            </div>
+            <p class="font-bold text-sm">
+              <span class="text-[#2E6F40] underline">Click to upload</span> or drag & drop
+            </p>
+            <p class="text-xs text-[#253D2C]/60 mt-2">PDF files only (Max 25MB)</p>
+          </div>
+
+          <div id="fileMeta" class="hidden">
+            <div class="flex items-center gap-3 bg-white p-4 rounded-xl border border-[#68BA7F] text-left">
+              <div class="text-2xl">📄</div>
+              <div class="flex-1 min-w-0">
+                <p id="fileNameDisplay" class="font-bold text-sm truncate">syllabus.pdf</p>
+                <p id="fileSizeDisplay" class="text-xs text-[#253D2C]/60">PDF</p>
+              </div>
+              <button type="button" onclick="removeUploadedFile(event)" class="text-xs text-rose-600 font-bold hover:underline">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM DATE + HOURS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-forest-border">
+        <div>
+          <label class="block text-sm font-extrabold mb-2">📅 Exam Date</label>
+          <input id="examDateInput" type="date" class="w-full px-4 py-3 rounded-xl border border-forest-border focus:ring-2 focus:ring-[#2E6F40] outline-none">
+          <p id="daysCountNotice" class="text-[11px] text-[#253D2C]/60 mt-2">Select your exam date.</p>
+        </div>
+
+        <div>
+          <div class="flex justify-between mb-2">
+            <label class="text-sm font-extrabold">⏰ Daily Study Time</label>
+            <span id="hoursDisplay" class="text-xs font-bold px-2 py-1 rounded-md bg-[#CFFFDC]">3 hours/day</span>
+          </div>
+          <input id="hoursSlider" type="range" min="1" max="12" value="3" class="w-full accent-[#2E6F40]" oninput="updateHoursDisplay(this.value)">
+          <div class="flex justify-between text-[11px] mt-1 text-[#253D2C]/60">
+            <span>1h</span>
+            <span>4h</span>
+            <span>8h</span>
+            <span>12h</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEVEL -->
+      <div class="pt-4 border-t border-forest-border">
+        <label class="block text-sm font-extrabold mb-3">📊 Current Learning Level</label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="level-card cursor-pointer border-2 border-[#2E6F40] bg-[#CFFFDC]/40 rounded-xl p-4 transition" data-level="Beginner" onclick="selectLevel('Beginner')">
+            <b>Beginner 🌱</b>
+            <p class="text-xs text-[#253D2C]/70 mt-1">Starting from fundamentals</p>
+          </div>
+          <div class="level-card cursor-pointer border-2 border-forest-border bg-white rounded-xl p-4 transition" data-level="Intermediate" onclick="selectLevel('Intermediate')">
+            <b>Intermediate 🌿</b>
+            <p class="text-xs text-[#253D2C]/70 mt-1">Comfortable with basics</p>
+          </div>
+          <div class="level-card cursor-pointer border-2 border-forest-border bg-white rounded-xl p-4 transition" data-level="Advanced" onclick="selectLevel('Advanced')">
+            <b>Advanced 🚀</b>
+            <p class="text-xs text-[#253D2C]/70 mt-1">Focus on depth and revision</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATE BTN -->
+      <button id="createPlanBtn" onclick="triggerRoadmapGeneration()" class="w-full py-4 rounded-xl bg-gradient-to-r from-[#2E6F40] to-[#253D2C] text-white font-extrabold shadow-lg forest-glow hover:opacity-95 transition">
+        🚀 Create My Learning Roadmap
+      </button>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="page-dashboard" class="page-view hidden space-y-8 pb-12">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-forest-border shadow-sm">
+      <div class="flex flex-col md:flex-row justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold">Welcome to LearnLoop 👋</h2>
+          <p class="text-sm text-[#253D2C]/70 mt-1">Your preparation at a glance.</p>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="navigateTo('roadmap')" class="px-4 py-2.5 rounded-xl bg-[#eaf8ef] border border-[#68BA7F]/40 font-bold text-sm">
+            Full Roadmap
+          </button>
+          <button onclick="navigateTo('setup')" class="px-4 py-2.5 rounded-xl bg-[#2E6F40] text-white font-bold text-sm">
+            New Plan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-2xl border border-forest-border shadow-sm">
+        <span class="text-xs font-bold uppercase text-[#253D2C]/60">Exam Target</span>
+        <div id="dashDaysLeft" class="text-2xl font-extrabold mt-2">--</div>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-forest-border shadow-sm">
+        <span class="text-xs font-bold uppercase text-[#253D2C]/60">Topics</span>
+        <div id="dashTopicsRatio" class="text-2xl font-extrabold mt-2">0 / 0</div>
+        <div class="w-full bg-[#dff3e5] rounded-full h-1.5 mt-2">
+          <div id="dashProgressMini" class="bg-[#2E6F40] h-1.5 rounded-full" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-forest-border shadow-sm">
+        <span class="text-xs font-bold uppercase text-[#253D2C]/60">Daily Study</span>
+        <div id="dashStudyHours" class="text-2xl font-extrabold mt-2">-- hrs</div>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-forest-border shadow-sm">
+        <span class="text-xs font-bold uppercase text-[#253D2C]/60">Progress</span>
+        <div id="dashProgressPercent" class="text-2xl font-extrabold text-[#2E6F40] mt-2">0%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="page-roadmap" class="page-view hidden space-y-6 pb-16">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-forest-border shadow-sm">
+      <div class="flex flex-col md:flex-row justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold">Your Personalized Roadmap</h2>
+          <p class="text-sm text-[#253D2C]/70 mt-1">Your AI-generated day-by-day learning plan.</p>
+        </div>
+        <button onclick="navigateTo('setup')" class="px-4 py-2 rounded-lg bg-[#CFFFDC] border border-[#68BA7F]/60 text-sm font-bold">
+          Re-generate
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-forest-border">
+        <div class="p-3 bg-[#eaf8ef] rounded-xl">
+          <div class="text-[11px] font-bold uppercase text-[#253D2C]/60">Days Left</div>
+          <div id="sumDaysLeft" class="font-extrabold mt-1">--</div>
+        </div>
+        <div class="p-3 bg-[#eaf8ef] rounded-xl">
+          <div class="text-[11px] font-bold uppercase text-[#253D2C]/60">Daily Study</div>
+          <div id="sumDailyHours" class="font-extrabold mt-1">--</div>
+        </div>
+        <div class="p-3 bg-[#eaf8ef] rounded-xl">
+          <div class="text-[11px] font-bold uppercase text-[#253D2C]/60">Topics</div>
+          <div id="sumTotalTopics" class="font-extrabold mt-1">0</div>
+        </div>
+        <div class="p-3 bg-[#CFFFDC] rounded-xl">
+          <div class="text-[11px] font-bold uppercase">Progress</div>
+          <div id="sumOverallPercent" class="font-extrabold text-[#2E6F40] mt-1">0%</div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="w-full bg-[#dff3e5] rounded-full h-2.5">
+          <div id="roadmapProgressBar" class="bg-[#2E6F40] h-2.5 rounded-full transition-all" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROADMAP CARDS -->
+    <div id="roadmapCardsContainer" class="space-y-4"></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="page-quiz" class="page-view hidden max-w-3xl mx-auto py-6">
+    <div class="bg-white rounded-2xl border border-forest-border shadow-sm p-6 sm:p-8">
+      <div class="flex justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold">🧠 Knowledge Quiz</h2>
+          <p class="text-sm text-[#253D2C]/70 mt-1">Test your understanding of your study topics.</p>
+        </div>
+        <button onclick="requestNewAiQuiz()" class="h-fit px-3 py-2 text-xs font-bold rounded-lg bg-[#CFFFDC] border border-[#68BA7F]">
+          New Quiz
+        </button>
+      </div>
+
+      <div class="mt-6">
+        <div class="flex justify-between text-xs font-bold">
+          <span id="quizStepIndicator">Question 1</span>
+          <span id="quizTopicBadge" class="text-[#2E6F40]">General Review</span>
+        </div>
+        <div class="w-full bg-[#dff3e5] rounded-full h-2 mt-2">
+          <div id="quizProgressBar" class="bg-[#2E6F40] h-2 rounded-full" style="width:20%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-forest-border shadow-sm p-6 sm:p-8 mt-5">
+      <h3 id="quizQuestionText" class="text-lg font-extrabold mb-6">No quiz generated yet.</h3>
+      <div id="quizOptionsContainer" class="space-y-3"></div>
+
+      <div class="mt-8 pt-5 border-t border-forest-border flex justify-end">
+        <button id="quizNextBtn" onclick="handleNextQuestion()" disabled class="px-6 py-3 rounded-xl bg-[#2E6F40] disabled:bg-[#d4e4d7] text-white font-bold transition">
+          <span id="nextBtnText">Next Question →</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="page-results" class="page-view hidden max-w-3xl mx-auto py-10">
+    <div class="bg-white rounded-2xl border border-forest-border shadow-sm p-6 sm:p-8 text-center">
+      <div class="text-4xl mb-3">🎉</div>
+      <h2 class="text-3xl font-extrabold">Quiz Complete</h2>
+
+      <div class="my-6">
+        <div id="scorePercentDisplay" class="text-6xl font-extrabold text-[#2E6F40]">
+          0%
+        </div>
+
+        <div class="flex items-center justify-center gap-6 mt-3 text-sm font-bold">
+          <span class="text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200" id="correctCountDisplay">
+            ✓ Correct: 0
+          </span>
+          <span class="text-rose-700 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200" id="wrongCountDisplay">
+            ✗ Incorrect: 0
+          </span>
+        </div>
+      </div>
+
+      <!-- DETAILED REVIEW -->
+      <div class="text-left mt-8 border-t border-forest-border pt-6">
+        <h3 class="text-lg font-extrabold mb-4 text-[#253D2C]">
+          Detailed Answer Review
+        </h3>
+        <div id="quizReviewContainer" class="space-y-4"></div>
+      </div>
+
+      <div class="mt-8 flex justify-center gap-4">
+        <button onclick="requestNewAiQuiz()" class="px-6 py-3 rounded-xl bg-[#CFFFDC] border border-[#68BA7F] font-bold text-sm text-[#253D2C] hover:bg-[#b5f3c7] transition">
+          Retry / New Quiz
+        </button>
+        <button onclick="navigateTo('roadmap')" class="px-6 py-3 rounded-xl bg-[#2E6F40] hover:bg-[#253D2C] text-white font-bold text-sm transition">
+          Back to Roadmap
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- LOADING OVERLAY -->
+<div id="aiLoadingOverlay" class="hidden fixed inset-0 z-[90] bg-[#253D2C]/70 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl text-center">
+    <div class="w-16 h-16 mx-auto mb-5 rounded-full border-4 border-[#CFFFDC] border-t-[#2E6F40] animate-spin"></div>
+    <h3 class="text-xl font-extrabold">Creating Your Roadmap</h3>
+    <p id="aiLoadingStepText" class="text-sm font-bold text-[#2E6F40] mt-2">Reading your syllabus...</p>
+    <div class="w-full bg-[#e3f4e8] rounded-full h-2 mt-5">
+      <div id="aiProgressBar" class="bg-[#2E6F40] h-2 rounded-full transition-all" style="width:20%"></div>
+    </div>
+    <p class="text-xs text-[#253D2C]/50 mt-4">LearnLoop AI is preparing your personalized plan.</p>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="authModal" class="hidden fixed inset-0 z-[100] bg-[#253D2C]/70 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl">
+    <div class="flex justify-between mb-5">
+      <h3 id="authModalTitle" class="text-xl font-extrabold">Log In</h3>
+      <button onclick="closeAuthModal()" class="text-gray-400 font-bold hover:text-black">✕</button>
+    </div>
+
+    <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+      <div id="authNameField" class="hidden">
+        <label class="block text-xs font-bold mb-1">Full Name</label>
+        <input id="authName" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-forest-border outline-none focus:ring-2 focus:ring-[#2E6F40]" placeholder="Your name">
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold mb-1">Email Address</label>
+        <input id="authEmail" type="email" required class="w-full px-3.5 py-2.5 rounded-xl border border-forest-border outline-none focus:ring-2 focus:ring-[#2E6F40]" placeholder="student@example.com">
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold mb-1">Password</label>
+        <input id="authPassword" type="password" required class="w-full px-3.5 py-2.5 rounded-xl border border-forest-border outline-none focus:ring-2 focus:ring-[#2E6F40]" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="w-full py-3 rounded-xl bg-[#2E6F40] hover:bg-[#253D2C] text-white font-extrabold transition">
+        Continue
+      </button>
+    </form>
+
+    <div class="mt-4 text-center text-xs text-[#253D2C]/70">
+      <span id="authSwitchPrompt">Don't have an account?</span>
+      <button onclick="toggleAuthMode()" id="authSwitchBtn" class="text-[#2E6F40] font-bold underline ml-1">
+        Sign Up
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+/* CONFIGURATION */
+const API_BASE_URL =
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://127.0.0.1:8000"
+    : "https://your-backend-api.onrender.com";
+
+/* APPLICATION STATE */
+const state = {
+  currentPage: "landing",
+  activeLevel: "Beginner",
+  dailyHours: 3,
+  examDate: "",
+  activeFile: null,
+
+  // Syllabus text extracted from the uploaded PDF
+  syllabusText: "",
+
+  roadmapDays: [],
+  quizQuestions: [],
+  currentQuestionIdx: 0,
+  userAnswers: {}
+};
+
+let authMode = "login";
+
+/* NAVIGATION */
+function navigateTo(pageId) {
+  state.currentPage = pageId;
+
+  document.querySelectorAll(".page-view").forEach(page => page.classList.add("hidden"));
+  const target = document.getElementById(`page-${pageId}`);
+  if (target) {
+    target.classList.remove("hidden");
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    if (btn.dataset.target === pageId) {
+      btn.classList.add("text-[#2E6F40]", "bg-forest-subtle", "font-bold");
+    } else {
+      btn.classList.remove("text-[#2E6F40]", "bg-forest-subtle", "font-bold");
+    }
+  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (pageId === "roadmap") {
+    renderRoadmapCards();
+  }
+  if (pageId === "quiz") {
+    renderQuizQuestion(state.currentQuestionIdx);
+  }
+}
+
+/* MOBILE MENU */
+function toggleMobileMenu() {
+  document.getElementById("mobileMenu").classList.toggle("hidden");
+}
+
+/* NOTIFICATION */
+function showNotification(message, icon = "🌿") {
+  const toast = document.getElementById("toast");
+  document.getElementById("toastMessage").innerText = message;
+  document.getElementById("toastIcon").innerText = icon;
+
+  toast.classList.remove("translate-y-20", "opacity-0");
+  toast.classList.add("translate-y-0", "opacity-100");
+
+  setTimeout(() => {
+    toast.classList.add("translate-y-20", "opacity-0");
+    toast.classList.remove("translate-y-0", "opacity-100");
+  }, 3500);
+}
+
+/* FILE UPLOAD */
+function handleFileSelected(files) {
+  if (!files || files.length === 0) return;
+
+  const file = files[0];
+  if (!file.name.toLowerCase().endsWith(".pdf")) {
+    showNotification("Please upload a PDF file.", "⚠️");
+    return;
+  }
+
+  if (file.size > 25 * 1024 * 1024) {
+    showNotification("PDF must be smaller than 25MB.", "⚠️");
+    return;
+  }
+
+  state.activeFile = file;
+  const sizeMB = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+  updateUploadUI(file.name, sizeMB);
+  showNotification("Syllabus uploaded successfully.", "📄");
+}
+
+function updateUploadUI(name, size) {
+  document.getElementById("uploadPrompt").classList.add("hidden");
+  document.getElementById("fileMeta").classList.remove("hidden");
+  document.getElementById("fileNameDisplay").innerText = name;
+  document.getElementById("fileSizeDisplay").innerText = `${size} • Ready for LearnLoop`;
+}
+
+function removeUploadedFile(event) {
+  if (event) event.stopPropagation();
+
+  state.activeFile = null;
+  document.getElementById("fileInput").value = "";
+  document.getElementById("uploadPrompt").classList.remove("hidden");
+  document.getElementById("fileMeta").classList.add("hidden");
+}
+
+/* DRAG & DROP */
+function handleDragOver(event) {
+  event.preventDefault();
+  document.getElementById("dropzone").classList.add("upload-drag");
+}
+
+function handleDragLeave(event) {
+  event.preventDefault();
+  document.getElementById("dropzone").classList.remove("upload-drag");
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+  document.getElementById("dropzone").classList.remove("upload-drag");
+  handleFileSelected(event.dataTransfer.files);
+}
+
+/* STUDY HOURS */
+function updateHoursDisplay(value) {
+  state.dailyHours = parseInt(value, 10);
+  document.getElementById("hoursDisplay").innerText = `${value} hours/day`;
+  const dashStudy = document.getElementById("dashStudyHours");
+  if (dashStudy) dashStudy.innerText = `${value} hrs`;
+  const sumHours = document.getElementById("sumDailyHours");
+  if (sumHours) sumHours.innerText = `${value} hours`;
+}
+
+/* LEVEL */
+function selectLevel(level) {
+  state.activeLevel = level;
+  document.querySelectorAll(".level-card").forEach(card => {
+    const selected = card.dataset.level === level;
+    if (selected) {
+      card.classList.add("border-[#2E6F40]", "bg-[#CFFFDC]/40");
+      card.classList.remove("border-forest-border", "bg-white");
+    } else {
+      card.classList.remove("border-[#2E6F40]", "bg-[#CFFFDC]/40");
+      card.classList.add("border-forest-border", "bg-white");
+    }
+  });
+}
+
+/* EXAM DATE */
+function updateDaysNotice() {
+  const value = document.getElementById("examDateInput").value;
+  if (!value) return;
+
+  const today = new Date();
+  const exam = new Date(value);
+  today.setHours(0, 0, 0, 0);
+  exam.setHours(0, 0, 0, 0);
+
+  const days = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
+  const notice = document.getElementById("daysCountNotice");
+
+  if (days <= 0) {
+    notice.innerText = "Please choose a future date.";
+    notice.classList.add("text-red-600");
+  } else {
+    notice.innerText = `${days} days available for preparation.`;
+    notice.classList.remove("text-red-600");
+  }
+}
+
+/* ROADMAP GENERATION */
+async function triggerRoadmapGeneration() {
+  if (!state.activeFile) {
+    showNotification("Please upload your syllabus PDF first.", "⚠️");
+    return;
+  }
+
+  const examDate = document.getElementById("examDateInput").value;
+  if (!examDate) {
+    showNotification("Please select your exam date.", "⚠️");
+    return;
+  }
+
+  const today = new Date();
+  const exam = new Date(examDate);
+  today.setHours(0, 0, 0, 0);
+  exam.setHours(0, 0, 0, 0);
+
+  const daysLeft = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
+  if (daysLeft <= 0) {
+    showNotification("Exam date must be in the future.", "⚠️");
+    return;
+  }
+
+  const button = document.getElementById("createPlanBtn");
+  button.disabled = true;
+  button.innerText = "🤖 Creating your roadmap...";
+
+  const modal = document.getElementById("aiLoadingOverlay");
+  const stepText = document.getElementById("aiLoadingStepText");
+  const progress = document.getElementById("aiProgressBar");
+
+  modal.classList.remove("hidden");
+
+  try {
+    stepText.innerText = "Uploading your syllabus...";
+    progress.style.width = "25%";
+
+    const formData = new FormData();
+    formData.append("syllabus", state.activeFile);
+    formData.append("exam_date", examDate);
+    formData.append("study_hours", state.dailyHours);
+    formData.append("level", state.activeLevel);
+
+    stepText.innerText = "AI is analyzing your syllabus...";
+    progress.style.width = "50%";
+
+    const token = localStorage.getItem("userToken");
+    const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+
+    const response = await fetch(`${API_BASE_URL}/generate-roadmap`, {
+      method: "POST",
+      headers: headers,
+      body: formData
+    });
+
+    if (!response.ok) {
+      let errorMessage = "Roadmap generation failed.";
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.detail || errorMessage;
+      } catch (_) {}
+      throw new Error(errorMessage);
+    }
+
+    stepText.innerText = "Organizing your personalized plan...";
+    progress.style.width = "80%";
+
+    const data = await response.json();
+    progress.style.width = "100%";
+
+    state.syllabusText = data.syllabus_text || "";
+
+    if (data.roadmap && Array.isArray(data.roadmap)) {
+      state.roadmapDays = data.roadmap.map((item, index) => {
+        const subtopics = Array.isArray(item.subtopics) ? item.subtopics : [];
+        return {
+          day: item.day || index + 1,
+          title: item.title || "Study Session",
+          priority: item.priority || "MEDIUM PRIORITY",
+          time: item.estimated_hours ? `${item.estimated_hours} hours` : `${state.dailyHours} hours`,
+          completed: false,
+          expanded: index === 0,
+          topics: subtopics.length
+            ? subtopics.map(topic => ({
+                name: typeof topic === "string" ? topic : JSON.stringify(topic),
+                completed: false
+              }))
+            : [
+                {
+                  name: item.practice_task || "Review and practice today's topics.",
+                  completed: false
+                }
+              ]
+        };
+      });
+    } else {
+      throw new Error("AI returned an unexpected roadmap format.");
+    }
+
+    const calculatedDays = data.days_left !== undefined ? data.days_left : daysLeft;
+    document.getElementById("dashDaysLeft").innerText = `${calculatedDays} days`;
+    document.getElementById("sumDaysLeft").innerText = `${calculatedDays} days`;
+
+    document.getElementById("dashStudyHours").innerText = `${state.dailyHours} hrs`;
+    document.getElementById("sumDailyHours").innerText = `${state.dailyHours} hours`;
+
+    modal.classList.add("hidden");
+    showNotification("Your personalized roadmap is ready! 🎉", "🌿");
+
+    button.disabled = false;
+    button.innerText = "🚀 Create My Learning Roadmap";
+
+    navigateTo("roadmap");
+  } catch (error) {
+    console.error("Roadmap generation error:", error);
+    modal.classList.add("hidden");
+    button.disabled = false;
+    button.innerText = "🚀 Create My Learning Roadmap";
+    showNotification(error.message || "Something went wrong.", "⚠️");
+  }
+}
+
+/* ROADMAP RENDER */
+function renderRoadmapCards() {
+  const container = document.getElementById("roadmapCardsContainer");
+  container.innerHTML = "";
+
+  if (!state.roadmapDays || state.roadmapDays.length === 0) {
+    container.innerHTML = `
+      <div class="bg-white rounded-2xl border border-forest-border p-10 text-center">
+        <div class="text-4xl mb-4">📚</div>
+        <h3 class="font-extrabold text-lg">No roadmap yet</h3>
+        <p class="text-sm text-[#253D2C]/60 mt-2">Upload your syllabus to create your personalized roadmap.</p>
+        <button onclick="navigateTo('setup')" class="mt-5 px-5 py-2.5 rounded-xl bg-[#2E6F40] text-white font-bold text-sm">
+          Create Roadmap
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  state.roadmapDays.forEach((dayData, dayIndex) => {
+    const allDone = dayData.topics.length > 0 && dayData.topics.every(t => t.completed);
+    const card = document.createElement("div");
+    card.className = "bg-white rounded-2xl border border-forest-border overflow-hidden shadow-sm";
+
+    let topicsHTML = "";
+    dayData.topics.forEach((topic, topicIndex) => {
+      topicsHTML += `
+        <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-[#eaf8ef] cursor-pointer">
+          <input
+            type="checkbox"
+            ${topic.completed ? "checked" : ""}
+            onchange="toggleTopicComplete(${dayIndex},${topicIndex})"
+            class="w-4 h-4 accent-[#2E6F40]"
+          >
+          <span class="text-sm ${topic.completed ? "line-through text-[#253D2C]/40" : "font-medium"}">
+            ${escapeHTML(topic.name)}
+          </span>
+        </label>
+      `;
+    });
+
+    card.innerHTML = `
+      <div class="p-5 flex items-center justify-between gap-4 cursor-pointer" onclick="toggleDayAccordion(${dayIndex})">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-xs ${allDone ? "bg-[#2E6F40] text-white" : "bg-[#CFFFDC]"}">
+            ${allDone ? "✓" : `D${dayData.day}`}
+          </div>
+          <div>
+            <h4 class="font-extrabold text-sm sm:text-base">Day ${dayData.day} — ${escapeHTML(dayData.title)}</h4>
+            <p class="text-xs text-[#253D2C]/60 mt-1">${escapeHTML(dayData.time)} • ${dayData.topics.length} tasks</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="hidden sm:inline-block text-[10px] font-extrabold px-2 py-1 rounded-full ${getPriorityClass(dayData.priority)}">
+            ${escapeHTML(dayData.priority)}
+          </span>
+          <span class="text-[#2E6F40] font-bold">${dayData.expanded ? "▲" : "▼"}</span>
+        </div>
+      </div>
+
+      <div class="${dayData.expanded ? "block" : "hidden"} border-t border-forest-border bg-[#eaf8ef]/40 p-4">
+        ${topicsHTML}
+        <button onclick="requestTopicQuiz('${escapeAttribute(dayData.title)}', event)" class="mt-3 px-3 py-2 rounded-lg bg-white border border-[#68BA7F]/50 text-xs font-bold text-[#2E6F40]">
+          🧠 Quiz this topic
+        </button>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+
+  updateRoadmapProgress();
+}
+
+/* PRIORITY COLOR */
+function getPriorityClass(priority) {
+  const value = String(priority).toLowerCase();
+  if (value.includes("high")) return "bg-red-50 text-red-700";
+  if (value.includes("low")) return "bg-green-50 text-green-700";
+  return "bg-amber-50 text-amber-700";
+}
+
+/* ACCORDION */
+function toggleDayAccordion(index) {
+  state.roadmapDays[index].expanded = !state.roadmapDays[index].expanded;
+  renderRoadmapCards();
+}
+
+/* TOPIC COMPLETE */
+function toggleTopicComplete(dayIndex, topicIndex) {
+  state.roadmapDays[dayIndex].topics[topicIndex].completed = !state.roadmapDays[dayIndex].topics[topicIndex].completed;
+  renderRoadmapCards();
+}
+
+/* PROGRESS */
+function updateRoadmapProgress() {
+  let total = 0;
+  let completed = 0;
+
+  state.roadmapDays.forEach(day => {
+    day.topics.forEach(topic => {
+      total++;
+      if (topic.completed) completed++;
+    });
+  });
+
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+  document.getElementById("sumTotalTopics").innerText = `${total} topics`;
+  document.getElementById("sumOverallPercent").innerText = `${percent}% Done`;
+  document.getElementById("roadmapProgressBar").style.width = `${percent}%`;
+
+  document.getElementById("dashTopicsRatio").innerText = `${completed} / ${total}`;
+  document.getElementById("dashProgressMini").style.width = `${percent}%`;
+  document.getElementById("dashProgressPercent").innerText = `${percent}%`;
+}
+
+/* QUIZ */
+async function requestTopicQuiz(topic, event) {
+  if (event) {
+    event.stopPropagation();
+  }
+
+  if (!state.syllabusText) {
+    showNotification("Please create a roadmap first.", "⚠️");
+    return;
+  }
+
+  showNotification(`Generating quiz for ${topic}...`, "🤖");
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/generate-quiz`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        syllabus: state.syllabusText,
+        level: state.activeLevel,
+        topic: topic,
+        difficulty: "Medium"
+      })
+    });
+
+    if (!response.ok) {
+      let errorMessage = "Quiz generation failed.";
+      try {
+        const errorData = await response.json();
+        if (errorData.detail) errorMessage = errorData.detail;
+      } catch (e) {}
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+
+    if (!data.questions || !Array.isArray(data.questions) || data.questions.length === 0) {
+      throw new Error("No quiz questions received.");
+    }
+
+    state.quizQuestions = data.questions.map((question, index) => ({
+      id: question.id || index + 1,
+      question: question.question,
+      topic: question.topic || data.topic || topic,
+      options: Array.isArray(question.options)
+        ? question.options.map((option, optionIndex) => ({
+            letter: ["A", "B", "C", "D"][optionIndex],
+            text: option
+          }))
+        : [],
+      correct: question.correct_answer
+        ? question.correct_answer.charAt(0).toUpperCase()
+        : "A"
+    }));
+
+    state.currentQuestionIdx = 0;
+    state.userAnswers = {};
+
+    navigateTo("quiz");
+  } catch (error) {
+    console.error("QUIZ ERROR:", error);
+    showNotification(error.message || "Quiz generation failed.", "⚠️");
+  }
+}
+
+function requestNewAiQuiz() {
+  const topic = state.roadmapDays[0]?.title || "Machine Learning";
+  requestTopicQuiz(topic, null);
+}
+
+function renderQuizQuestion(index) {
+  const question = state.quizQuestions[index];
+
+  if (!question) {
+    document.getElementById("quizQuestionText").innerText = "Generate a quiz to start.";
+    document.getElementById("quizOptionsContainer").innerHTML = "";
+    document.getElementById("quizNextBtn").disabled = true;
+    return;
+  }
+
+  document.getElementById("quizStepIndicator").innerText = `Question ${index + 1} of ${state.quizQuestions.length}`;
+  document.getElementById("quizTopicBadge").innerText = `Topic: ${question.topic}`;
+  document.getElementById("quizQuestionText").innerText = question.question;
+
+  const container = document.getElementById("quizOptionsContainer");
+  container.innerHTML = "";
+
+  const selected = state.userAnswers[index];
+
+  question.options.forEach(option => {
+    const selectedOption = selected === option.letter;
+    const div = document.createElement("div");
+
+    div.className = `p-4 rounded-xl border-2 cursor-pointer transition flex items-center gap-3 ${
+      selectedOption ? "border-[#2E6F40] bg-[#CFFFDC]/50" : "border-forest-border hover:border-[#68BA7F]"
+    }`;
+
+    div.innerHTML = `
+      <div class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs ${
+        selectedOption ? "bg-[#2E6F40] text-white" : "bg-[#eaf8ef]"
+      }">
+        ${option.letter}
+      </div>
+      <span class="text-sm font-semibold">${escapeHTML(option.text)}</span>
+    `;
+
+    div.onclick = () => {
+      state.userAnswers[index] = option.letter;
+      renderQuizQuestion(index);
+    };
+
+    container.appendChild(div);
+  });
+
+  const nextButton = document.getElementById("quizNextBtn");
+  nextButton.disabled = !selected;
+  document.getElementById("nextBtnText").innerText = index === state.quizQuestions.length - 1 ? "Submit Quiz" : "Next Question →";
+
+  const progress = ((index + 1) / state.quizQuestions.length) * 100;
+  document.getElementById("quizProgressBar").style.width = `${progress}%`;
+}
+
+/* NEXT QUESTION & RESULTS RENDER WITH ENGLISH LABELS */
+function handleNextQuestion() {
+  if (state.currentQuestionIdx < state.quizQuestions.length - 1) {
+    state.currentQuestionIdx++;
+    renderQuizQuestion(state.currentQuestionIdx);
+    return;
+  }
+
+  let correct = 0;
+  let wrong = 0;
+  const reviewContainer = document.getElementById("quizReviewContainer");
+  reviewContainer.innerHTML = "";
+
+  state.quizQuestions.forEach((question, index) => {
+    const userAnswerLetter = state.userAnswers[index] || "Not Answered";
+    const correctAnswerLetter = question.correct;
+    const isCorrect = userAnswerLetter === correctAnswerLetter;
+
+    if (isCorrect) {
+      correct++;
+    } else {
+      wrong++;
+    }
+
+    const userOptionObj = question.options.find(opt => opt.letter === userAnswerLetter);
+    const correctOptionObj = question.options.find(opt => opt.letter === correctAnswerLetter);
+
+    const userText = userOptionObj ? `${userOptionObj.letter}. ${escapeHTML(userOptionObj.text)}` : "Not Answered";
+    const correctText = correctOptionObj ? `${correctOptionObj.letter}. ${escapeHTML(correctOptionObj.text)}` : correctAnswerLetter;
+
+    const card = document.createElement("div");
+    card.className = `p-4 rounded-xl border text-left ${
+      isCorrect ? "border-emerald-200 bg-emerald-50/40" : "border-rose-200 bg-rose-50/40"
+    }`;
+
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-3">
+        <span class="text-xs font-bold px-2 py-0.5 rounded ${
+          isCorrect ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+        }">
+          Question ${index + 1} • ${isCorrect ? "Correct" : "Incorrect"}
+        </span>
+        <span class="text-xs text-[#253D2C]/60">${escapeHTML(question.topic || "")}</span>
+      </div>
+
+      <p class="font-bold text-sm mt-2 text-[#253D2C]">
+        ${escapeHTML(question.question)}
+      </p>
+
+      <div class="mt-3 text-xs space-y-1">
+        <div class="flex items-center gap-1.5 ${isCorrect ? "text-emerald-800 font-bold" : "text-rose-700 font-medium"}">
+          <span>Your Answer:</span>
+          <span>${userText}</span>
+        </div>
+
+        ${
+          !isCorrect
+            ? `<div class="flex items-center gap-1.5 text-emerald-800 font-bold">
+                 <span>Correct Answer:</span>
+                 <span>${correctText}</span>
+               </div>`
+            : ""
+        }
+      </div>
+    `;
+
+    reviewContainer.appendChild(card);
+  });
+
+  const total = state.quizQuestions.length;
+  const percent = total === 0 ? 0 : Math.round((correct / total) * 100);
+
+  document.getElementById("scorePercentDisplay").innerText = `${percent}%`;
+  document.getElementById("correctCountDisplay").innerText = `✓ Correct: ${correct} / ${total}`;
+  document.getElementById("wrongCountDisplay").innerText = `✗ Incorrect: ${wrong} / ${total}`;
+
+  navigateTo("results");
+}
+
+/* AUTH */
+function openAuthModal(mode) {
+  authMode = mode;
+  document.getElementById("authModalTitle").innerText = mode === "signup" ? "Create Account" : "Log In";
+  document.getElementById("authNameField").classList.toggle("hidden", mode !== "signup");
+  document.getElementById("authSwitchPrompt").innerText = mode === "signup" ? "Already have an account?" : "Don't have an account?";
+  document.getElementById("authSwitchBtn").innerText = mode === "signup" ? "Log In" : "Sign Up";
+  document.getElementById("authModal").classList.remove("hidden");
+}
+
+function closeAuthModal() {
+  document.getElementById("authModal").classList.add("hidden");
+}
+
+function toggleAuthMode() {
+  openAuthModal(authMode === "login" ? "signup" : "login");
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+  const email = document.getElementById("authEmail").value;
+  const password = document.getElementById("authPassword").value;
+  const name = document.getElementById("authName").value;
+
+  const endpoint = authMode === "signup" ? "/signup" : "/login";
+  const payload = authMode === "signup" ? { name, email, password } : { email, password };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.detail || "Authentication failed.");
+    }
+
+    if (authMode === "signup") {
+      showNotification("Account created successfully! Please log in.", "🎉");
+      openAuthModal("login");
+      return;
+    }
+
+    localStorage.setItem("userToken", data.access_token);
+    localStorage.setItem("userName", data.user_name || email.split("@")[0]);
+
+    updateAuthUI();
+    closeAuthModal();
+    showNotification("Welcome back! 🌿", "🎉");
+  } catch (error) {
+    showNotification(error.message, "⚠️");
+  }
+}
+
+function updateAuthUI() {
+  const token = localStorage.getItem("userToken");
+  const name = localStorage.getItem("userName");
+
+  const authSection = document.getElementById("authHeaderSection");
+  const profileSection = document.getElementById("userProfileSection");
+
+  if (token && name) {
+    authSection.classList.add("hidden");
+    profileSection.classList.remove("hidden");
+    profileSection.classList.add("flex");
+    document.getElementById("userNameDisplay").innerText = name;
+    document.getElementById("userAvatar").innerText = name.charAt(0).toUpperCase();
+  } else {
+    authSection.classList.remove("hidden");
+    profileSection.classList.add("hidden");
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem("userToken");
+  localStorage.removeItem("userName");
+  updateAuthUI();
+  showNotification("Logged out successfully.", "👋");
+}
+
+/* SECURITY / HTML HELPERS */
+function escapeHTML(value) {
+  const div = document.createElement("div");
+  div.innerText = String(value);
+  return div.innerHTML;
+}
+
+function escapeAttribute(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
+/* INITIALIZATION */
+window.addEventListener("DOMContentLoaded", () => {
+  const today = new Date();
+  const defaultDate = new Date();
+  defaultDate.setDate(today.getDate() + 14);
+
+  const yyyy = defaultDate.getFullYear();
+  const mm = String(defaultDate.getMonth() + 1).padStart(2, "0");
+  const dd = String(defaultDate.getDate()).padStart(2, "0");
+
+  const datePicker = document.getElementById("examDateInput");
+  if (datePicker) {
+    datePicker.value = `${yyyy}-${mm}-${dd}`;
+    datePicker.min = new Date().toISOString().split("T")[0];
+  }
+
+  updateHoursDisplay(3);
+  selectLevel("Beginner");
+  updateAuthUI();
+  updateDaysNotice();
+});
+
+document.getElementById("examDateInput")?.addEventListener("change", updateDaysNotice);
+</script>
+
+</body>
+</html>
