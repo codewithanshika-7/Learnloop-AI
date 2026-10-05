@@ -5,3 +5,6 @@ pypdf
 python-dotenv
 openai
 groq
+bcrypt
+pyjwt
+passlib
